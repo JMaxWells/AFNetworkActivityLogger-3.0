@@ -127,8 +127,13 @@ static void * AFNetworkRequestStartDate = &AFNetworkRequestStartDate;
     
     id responseObject = notification.userInfo[AFNetworkingTaskDidCompleteSerializedResponseKey];
     if (responseObject) {
-        NSStringEncoding stringEncoding = NSUTF8StringEncoding;
-        responseObject = [[NSString alloc] initWithData:responseObject encoding:stringEncoding];
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            responseObject = [[NSDictionary alloc] initWithDictionary:responseObject];
+        }
+        else if ([responseObject isKindOfClass:[NSData class]]) {
+            NSStringEncoding stringEncoding = NSUTF8StringEncoding;
+            responseObject = [[NSString alloc] initWithData:responseObject encoding:stringEncoding];
+        }
     }
     
     NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSinceDate:objc_getAssociatedObject(notification.object, AFNetworkRequestStartDate)];
